@@ -1,0 +1,69 @@
+
+#include <mega164a.h>
+
+// Declare your global variables here
+int Q=0;
+// Timer 0 overflow interrupt service routine
+interrupt [TIM0_OVF] void timer0_ovf_isr(void)
+{
+
+int tmp = PINA;
+// Reinitialize Timer 0 value
+TCNT0=0x4E;
+// Place your code here
+
+switch (Q)
+       {
+       case 0:  
+       PORTC = 0x7F ;
+       if (tmp == 0x7F) Q=1;     // SW7 - Start Introducere Parola
+       break;
+       
+       case 1: 
+       if (tmp == 0xFE) Q=2;     // SW0
+       else if (tmp == 0xEF) 
+       Q=0; 
+       
+       break;  
+       
+       case 2:
+       if (tmp == 0xFD) Q=3;  //SW1
+       else if (tmp == 0xEF) 
+       Q=0; 
+       
+       break;
+       
+       case 3:
+       if (tmp == 0xFB) Q=4;  //SW2
+       else if (tmp == 0xEF) 
+       Q=0; 
+       
+
+       break; 
+       
+       case 4:
+       if (tmp == 0xF7)Q=5;     //SW3
+       else if (tmp == 0xEF) 
+       Q=0; 
+       
+       
+       break;  
+       
+       case 5:
+       if (tmp == 0xBF)          //SW6
+       { Q=6;                      // Confirmare Parola
+        PORTC = 0xFE;
+       }
+       else if (tmp == 0xEF) Q=0;
+       
+       break; 
+       
+       case 6: 
+       
+       if (tmp == 0xDF){ Q=0;     // SW5 - Blocare & Led-ul pt blocare
+       PORTC = 0x7F;}
+       break;
+       } 
+       
+
+}

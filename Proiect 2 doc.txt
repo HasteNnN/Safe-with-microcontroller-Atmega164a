@@ -1,0 +1,82 @@
+Schema electrica in orcad, cod ul programului in codevision, simulatile, graful starilor si o mica descriere a ce face fiecare port, gen pe portu a am asta, pe portu b am asta
+ATMEGA164A
+A - intrare 
+C - iesire
+Salvare: cvaverval -> bin
+// Overflow selectat.
+1 2 3
+1 3 2
+2 1 3 
+2 3 1
+3 2 1
+3 1 2
+switch (Q)
+       {
+       case 0:  
+       PORTC = 0x7F ;
+       if (tmp == 0x7F) Q=1;     // Start Introducere Parola
+       break;
+       
+       case 1: 
+       if (tmp == 0xFE) Q=2; 
+       else if (tmp == 0xEF) 
+       {
+       Q=0; 
+       
+       }
+       break;  
+       
+       case 2:
+       if (tmp == 0xFD) Q=3;  
+       else if (tmp == 0xEF) 
+       {
+       Q=0; 
+       
+       }
+       break;
+       
+       case 3:
+       if (tmp == 0xFB) Q=4;  
+       else if (tmp == 0xEF) 
+       {
+       Q=0; 
+       
+       }
+
+       break; 
+       
+       case 4:
+       if (tmp == 0xF7)Q=5;
+       else if (tmp == 0xEF) 
+       {
+       Q=0; 
+       
+       }
+       
+       break;  
+       
+       case 5:
+       if (tmp == 0xBF)
+       { Q=6;                      // Confirmare Parola
+        PORTC = 0xFE;
+        }
+       else if (tmp == 0xEF) 
+       {
+       Q=0; 
+       
+       }
+       
+       break; 
+       
+      
+       case 6: 
+       
+       if (tmp == 0xDF){ Q=0;     // Blocare & Led-ul pt blocare
+       PORTC = 0x7F;}
+       break;
+       
+     
+       } 
+       
+
+}
